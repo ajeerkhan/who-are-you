@@ -10,9 +10,8 @@ export class RequestIpController {
   constructor(private readonly requestIpService: RequestIpService) {}
 
   @Get()
-  getClientIP(@Ip() ip : string) {
-
-    return `Hey! you are ${ip}`;
+  getClientIP(@RealIP("realIp") realIp : string) {
+    return realIp;
   };
 
   @Get("client-ip")
