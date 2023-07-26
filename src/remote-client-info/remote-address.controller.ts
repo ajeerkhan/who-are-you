@@ -8,7 +8,7 @@ import { RealIP } from 'nestjs-real-ip'
 export class RemoteAddressController {
   constructor(private readonly remoteAddressService: RemoteAddressService) {}
 
-  @Get()
+  @Get(["/", "/ip"])
   getClientIP(@RealIP("realIp") realIp : string, @Req() req : Request) {
     let remoteAddressRequestDto: RemoteAddressRequestDto = new RemoteAddressRequestDto();
     remoteAddressRequestDto = {
