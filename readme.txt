@@ -19,3 +19,13 @@ Cf-Pseudo-IPv4 (Cloudflare fallback)
 request.raw (Fastify)
 
 If an IP address cannot be found, it will return null.
+
+
+# Ip to location mapping
+ Maxmind geolite db is being used, to get the location of a request.
+
+ Two node js implementation
+
+ * slow startup, faster read https://github.com/geoip-lite/node-geoip/ *
+
+ * faster startup, slow read https://github.com/onramper/fast-geoip/ *

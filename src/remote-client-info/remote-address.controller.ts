@@ -1,17 +1,40 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, Ip, Req } from '@nestjs/common';
-import { RequestIpService } from './request-ip.service';
-import { CreateRequestIpDto } from './dto/create-request-ip.dto';
-import { UpdateRequestIpDto } from './dto/update-request-ip.dto';
+import { RemoteAddressService } from './remote-address.service';
+import { RemoteAddressRequestDto } from './dto/remote-address-request.dto';
 import { Request } from 'express';
 import { RealIP } from 'nestjs-real-ip'
 
-@Controller('request-ip')
-export class RequestIpController {
-  constructor(private readonly requestIpService: RequestIpService) {}
+@Controller('client')
+export class RemoteAddressController {
+  constructor(private readonly remoteAddressService: RemoteAddressService) {}
 
   @Get()
-  getClientIP(@RealIP("realIp") realIp : string) {
-    return realIp;
+  getClientIP(@RealIP("realIp") realIp : string, @Req() req : Request) {
+    let remoteAddressRequestDto: RemoteAddressRequestDto = new RemoteAddressRequestDto();
+    remoteAddressRequestDto = {
+      ip : realIp,
+      url: req.url,
+      requestedTime : new Date()
+    };
+    return this.remoteAddressService.getClientIP(remoteAddressRequestDto);
+  };
+
+  @Get('location')
+  async getClientLocation(@RealIP("realIp") realIp : string, @Req() req : Request) {
+    let remoteAddressRequestDto: RemoteAddressRequestDto = new RemoteAddressRequestDto();
+    remoteAddressRequestDto = {
+      ip : realIp,
+      url: req.url,
+      requestedTime : new Date()
+    };
+
+    const location = await this.remoteAddressService.getClientLocation(remoteAddressRequestDto);
+    if(location)
+      return location;
+    return ({
+      code : 404,
+      message: `We are unable to locate the location for ip ${remoteAddressRequestDto.ip}.`
+    });
   };
 
   @Get("client-ip")
@@ -40,25 +63,5 @@ export class RequestIpController {
       realIp,
       ip
     }
-  }
-
-  @Post()
-  create(@Body() createRequestIpDto: CreateRequestIpDto) {
-    return this.requestIpService.create(createRequestIpDto);
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.requestIpService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateRequestIpDto: UpdateRequestIpDto) {
-    return this.requestIpService.update(+id, updateRequestIpDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.requestIpService.remove(+id);
   }
 }

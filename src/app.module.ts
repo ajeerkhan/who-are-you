@@ -1,8 +1,8 @@
 import { Module } from '@nestjs/common';
-import { RequestIpModule } from './request-ip/request-ip.module';
+import { RemoteAddressModule } from './remote-client-info/remote-address.module';
 
 @Module({
-  imports: [RequestIpModule],
+  imports: [RemoteAddressModule],
   controllers: [],
   providers: [],
 })
